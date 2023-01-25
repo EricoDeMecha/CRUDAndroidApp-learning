@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="5dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="10dp"
+        app:cardCornerRadius="10dp"
+        android:layout_margin="5dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardMaxElevation="10dp"
+        app:cardPreventCornerOverlap="true"
+        app:cardUseCompatPadding="true"
+        android:layout_centerHorizontal="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            >
+            <TextView
+                android:id="@+id/course_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Course Title"
+                android:textColor="@color/black"
+                android:textSize="16dp"
+                android:layout_centerHorizontal="true"/>
+            <ImageButton
+                android:id="@+id/course_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_baseline_remove_circle_outline_24"
+                android:background="@drawable/round_button"
+                android:layout_alignParentRight="true"/>
+            <LinearLayout
+                android:id="@+id/dates_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/course_title"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:id="@+id/course_start_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Course Start date"
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" to "
+                    />
+                <TextView
+                    android:id="@+id/course_end_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="course end date"
+                    />
+            </LinearLayout>
+            <TextView
+                android:id="@+id/course_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Course status"
+                android:layout_below="@id/dates_container"
+                android:layout_centerHorizontal="true"
+                />
+            <TextView
+                android:id="@+id/course_instructor"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Course Instructor"
+                android:layout_below="@id/course_status"
+                android:textColor="@color/teal_700"
+                android:layout_centerHorizontal="true"
+                style="@android:style/Widget.Button"
+                />
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

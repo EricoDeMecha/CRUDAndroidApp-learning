@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">SchoolSystem</string>
+    <string-array name="course_status_list">
+        <item>INPROGRESS</item>
+        <item>COMPLETED</item>
+        <item>DROPPED</item>
+        <item>PLANTOTAKE</item>
+    </string-array>
+</resources>
