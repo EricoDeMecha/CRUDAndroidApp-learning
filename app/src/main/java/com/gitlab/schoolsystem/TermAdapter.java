@@ -22,7 +22,7 @@ public class TermAdapter extends RecyclerView.Adapter<TermAdapter.ViewHolder> {
     Context context;
     List<TermModel> termList;
     private OnTermListener onTermListener;
-    public TermAdapter(Context context, ArrayList<TermModel> termList, OnTermListener onTermListener){
+    public TermAdapter(Context context, List<TermModel> termList, OnTermListener onTermListener){
         this.context = context;
         this.termList  = termList;
         this.onTermListener = onTermListener;

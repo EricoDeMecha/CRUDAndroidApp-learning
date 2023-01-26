@@ -19,6 +19,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements TermAdapter.OnTermListener{
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements TermAdapter.OnTer
 
     RecyclerView recyclerView;
     TermAdapter termAdapter;
-    ArrayList<TermModel> termModelList;
+    List<TermModel> termModelList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,8 +70,6 @@ public class MainActivity extends AppCompatActivity implements TermAdapter.OnTer
         m_end_date = dialog_view.findViewById(R.id.enddate);
         DatePicker.getInstance().selectDate(this, m_start_date);
         DatePicker.getInstance().selectDate(this, m_end_date);
-/*        selectDate(m_start_date);
-        selectDate(m_end_date);*/
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         term_name = dialog_view.findViewById(R.id.termEdit);
         builder.setView(dialog_view);
@@ -92,28 +91,6 @@ public class MainActivity extends AppCompatActivity implements TermAdapter.OnTer
                 });
         dialog = builder.create();
     }
-    /*private void selectDate(EditText date_view){
-        date_view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(android.widget.DatePicker datePicker, int year, int month, int day) {
-                        m_calendar.set(Calendar.YEAR, year);
-                        m_calendar.set(Calendar.MONTH, month);
-                        m_calendar.set(Calendar.DAY_OF_MONTH, day);
-                        date_view.setText(updateDate());
-                    }
-                };
-                new DatePickerDialog(MainActivity.this, date, m_calendar.get(Calendar.YEAR), m_calendar.get(Calendar.MONTH), m_calendar.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });
-    }
-    private String updateDate() {
-        String m_format = "yyyy-MM-dd";
-        SimpleDateFormat date_format = new SimpleDateFormat(m_format, Locale.US);
-        return date_format.format(m_calendar.getTime());
-    }*/
 
     @Override
     public void onTermClicked(int position) {

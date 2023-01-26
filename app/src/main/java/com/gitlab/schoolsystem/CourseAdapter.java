@@ -15,23 +15,25 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CourseAdapter  extends RecyclerView.Adapter<CourseAdapter.ViewHolder>{
     private static final String TAG = "CourseAdapter";
     private Context context;
     private List<CourseModel> courseModelList;
-
-    public CourseAdapter(Context context, List<CourseModel> courseModelList) {
+    private OnCourseListener  onCourseListener;
+    public CourseAdapter(Context context, List<CourseModel> courseModelList, OnCourseListener onCourseListener) {
         this.courseModelList = courseModelList;
         this.context = context;
+        this.onCourseListener = onCourseListener;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.course, parent, false);
-        return  new ViewHolder(view);
+        return  new ViewHolder(view, onCourseListener);
     }
 
     @Override
@@ -85,15 +87,25 @@ public class CourseAdapter  extends RecyclerView.Adapter<CourseAdapter.ViewHolde
         return courseModelList.size();
     }
 
-    public  class  ViewHolder extends RecyclerView.ViewHolder {
+    public  class  ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView course_title_view, course_start_date_view, course_end_date_view, course_status_view, course_instructor_view;
-        public ViewHolder(@NonNull View itemView) {
+        OnCourseListener onCourseListener;
+        public ViewHolder(@NonNull View itemView, OnCourseListener onCourseListener) {
             super(itemView);
             course_title_view = itemView.findViewById(R.id.course_title);
             course_start_date_view = itemView.findViewById(R.id.course_start_date);
             course_end_date_view =  itemView.findViewById(R.id.course_end_date);
             course_status_view =  itemView.findViewById(R.id.course_status);
             course_instructor_view =  itemView.findViewById(R.id.course_instructor);
+
         }
+
+        @Override
+        public void onClick(View view) {
+            onCourseListener.onCourseClicked(getAdapterPosition());
+        }
+    }
+    public interface OnCourseListener{
+        void onCourseClicked(int position);
     }
 }

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
@@ -24,7 +25,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-public class CourseActivity extends AppCompatActivity {
+public class CourseActivity extends AppCompatActivity implements CourseAdapter.OnCourseListener{
     private static final String TAG = "CourseActivity";
     private static final int NUM_COLS  = 2;
     private final List<CourseModel> courseModelList = new ArrayList<>();
@@ -94,7 +95,7 @@ public class CourseActivity extends AppCompatActivity {
     }
     public void initRecyclerView(){
         recyclerView= findViewById(R.id.courses_recycler_view);
-        courseAdapter = new CourseAdapter(this, courseModelList);
+        courseAdapter = new CourseAdapter(this, courseModelList, this);
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(NUM_COLS, LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         recyclerView.setAdapter(courseAdapter);
@@ -182,4 +183,10 @@ public class CourseActivity extends AppCompatActivity {
         return string_array;
     }
 
+    @Override
+    public void onCourseClicked(int position) {
+        Intent intent = new Intent(this, Assessment.class);
+        intent.putExtra("Course", (CharSequence) courseModelList.get(position));
+        startActivity(intent);
+    }
 }
