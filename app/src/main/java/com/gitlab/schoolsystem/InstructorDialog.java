@@ -38,10 +38,12 @@ public class InstructorDialog {
                 .setPositiveButton("Update", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        instructor.setName(instructor_name.getText().toString());
-                        instructor.setPhone(instructor_phone.getText().toString());
-                        instructor.setEmail_address(instructor_email.getText().toString());
-                        courseAdapter.notifyItemChanged(position);
+                        if(!Utils.isEmpty(instructor_name) && !Utils.isEmpty(instructor_phone) && !Utils.isEmpty(instructor_email)){
+                            instructor.setName(instructor_name.getText().toString());
+                            instructor.setPhone(instructor_phone.getText().toString());
+                            instructor.setEmail_address(instructor_email.getText().toString());
+                            courseAdapter.notifyItemChanged(position);
+                        }
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

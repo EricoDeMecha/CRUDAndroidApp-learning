@@ -1,9 +1,13 @@
 <resources>
-    <string name="app_name">SchoolSystem</string>
+    <string name="app_name">School System</string>
     <string-array name="course_status_list">
         <item>INPROGRESS</item>
         <item>COMPLETED</item>
         <item>DROPPED</item>
         <item>PLANTOTAKE</item>
     </string-array>
+    <string name="title_activity_course_children">Course</string>
+    <string name="tab_text_1">Details</string>
+    <string name="tab_text_2">Assessments</string>
+    <string name="tab_text_3">Notes</string>
 </resources>

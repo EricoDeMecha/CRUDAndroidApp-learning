@@ -16,11 +16,9 @@ import android.widget.LinearLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements TermAdapter.OnTermListener{
     // dialog items
@@ -77,10 +75,12 @@ public class MainActivity extends AppCompatActivity implements TermAdapter.OnTer
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        termModelList.add(new TermModel(term_name.getText().toString(), m_start_date.getText().toString(), m_end_date.getText().toString()));
-                        termAdapter.notifyItemInserted(termModelList.size()-1);
-                        clearDialogFields();
-                        recyclerView.scrollToPosition(termModelList.size()-1);
+                        if(!Utils.isEmpty(term_name) && !Utils.isEmpty(m_start_date) && !Utils.isEmpty(m_end_date)){
+                            termModelList.add(new TermModel(term_name.getText().toString(), m_start_date.getText().toString(), m_end_date.getText().toString()));
+                            termAdapter.notifyItemInserted(termModelList.size()-1);
+                            clearDialogFields();
+                            recyclerView.scrollToPosition(termModelList.size()-1);
+                        }
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

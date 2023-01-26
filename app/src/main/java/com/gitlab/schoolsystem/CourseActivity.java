@@ -3,6 +3,7 @@ package com.gitlab.schoolsystem;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -28,7 +29,7 @@ import java.util.function.Consumer;
 public class CourseActivity extends AppCompatActivity implements CourseAdapter.OnCourseListener{
     private static final String TAG = "CourseActivity";
     private static final int NUM_COLS  = 2;
-    private final List<CourseModel> courseModelList = new ArrayList<>();
+    private List<CourseModel> courseModelList;
     private FloatingActionButton add_course_btn;
     private CourseAdapter courseAdapter;
     private RecyclerView recyclerView;
@@ -37,6 +38,13 @@ public class CourseActivity extends AppCompatActivity implements CourseAdapter.O
     private View course_dialog_view;
     private final Calendar calendar = Calendar.getInstance();
     TermModel termModel;
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavUtils.navigateUpFromSameTask(this);
+        return true;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,10 +54,17 @@ public class CourseActivity extends AppCompatActivity implements CourseAdapter.O
             termModel = getIntent().getParcelableExtra("Term");
         }
         // set up a back button on the toolbar
-        ActionBar actionBar  = getSupportActionBar();
+        /*ActionBar actionBar  = getSupportActionBar();
         actionBar.setTitle(termModel.getTerm_name());
         actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(true);*/
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setTitle(termModel.getTerm_name());
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        // init couseModelList
+        courseModelList  = new ArrayList<>();
         // TODO Use term details to update the course details
         courseModelList.add(new CourseModel(
            "Course1",
@@ -133,15 +148,17 @@ public class CourseActivity extends AppCompatActivity implements CourseAdapter.O
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        courseModelList.add(new CourseModel(
-                                course_title_view.getText().toString(),
-                                course_start_date.getText().toString(),
-                                course_end_date.getText().toString(),
-                                CourseStatus.valueOf(selected_status.toString()),
-                                new InstructorModel(selected_instructor.toString())));
-                        courseAdapter.notifyItemInserted(courseModelList.size()-1);
-                        clearCourseDialogFields();
-                        recyclerView.scrollToPosition(courseModelList.size()-1);
+                        if(!Utils.isEmpty(course_title_view) && !Utils.isEmpty(course_start_date) && !Utils.isEmpty(course_start_date) && selected_status!=null && selected_instructor != null){
+                            courseModelList.add(new CourseModel(
+                                    course_title_view.getText().toString(),
+                                    course_start_date.getText().toString(),
+                                    course_end_date.getText().toString(),
+                                    CourseStatus.valueOf(selected_status.toString()),
+                                    new InstructorModel(selected_instructor.toString())));
+                            courseAdapter.notifyItemInserted(courseModelList.size()-1);
+                            clearCourseDialogFields();
+                            recyclerView.scrollToPosition(courseModelList.size()-1);
+                        }
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -185,8 +202,8 @@ public class CourseActivity extends AppCompatActivity implements CourseAdapter.O
 
     @Override
     public void onCourseClicked(int position) {
-        Intent intent = new Intent(this, Assessment.class);
-        intent.putExtra("Course", (CharSequence) courseModelList.get(position));
+        Intent intent = new Intent(this, CourseChildren.class);
+        intent.putExtra("CourseModel", courseModelList.get(position));
         startActivity(intent);
     }
 }
