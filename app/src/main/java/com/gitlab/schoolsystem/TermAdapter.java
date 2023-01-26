@@ -18,10 +18,27 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Term adapter.
+ */
 public class TermAdapter extends RecyclerView.Adapter<TermAdapter.ViewHolder> {
+    /**
+     * The Context.
+     */
     Context context;
+    /**
+     * The Term list.
+     */
     List<TermModel> termList;
     private OnTermListener onTermListener;
+
+    /**
+     * Instantiates a new Term adapter.
+     *
+     * @param context        the context
+     * @param termList       the term list
+     * @param onTermListener the on term listener
+     */
     public TermAdapter(Context context, List<TermModel> termList, OnTermListener onTermListener){
         this.context = context;
         this.termList  = termList;
@@ -70,9 +87,31 @@ public class TermAdapter extends RecyclerView.Adapter<TermAdapter.ViewHolder> {
         return termList.size();
     }
 
+    /**
+     * The type View holder.
+     */
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        TextView term_name_view, start_date_view , end_date_view;
+        /**
+         * The Term name view.
+         */
+        TextView term_name_view, /**
+         * The Start date view.
+         */
+        start_date_view , /**
+         * The End date view.
+         */
+        end_date_view;
+        /**
+         * The On term listener.
+         */
         OnTermListener onTermListener;
+
+        /**
+         * Instantiates a new View holder.
+         *
+         * @param itemView       the item view
+         * @param onTermListener the on term listener
+         */
         public ViewHolder(@NonNull View itemView, OnTermListener onTermListener) {
             super(itemView);
             term_name_view = itemView.findViewById(R.id.termname);
@@ -89,7 +128,15 @@ public class TermAdapter extends RecyclerView.Adapter<TermAdapter.ViewHolder> {
         }
     }
 
+    /**
+     * The interface On term listener.
+     */
     public interface OnTermListener{
+        /**
+         * On term clicked.
+         *
+         * @param position the position
+         */
         void onTermClicked(int position);
     }
 }

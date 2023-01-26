@@ -26,6 +26,9 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
+/**
+ * The type Course activity.
+ */
 public class CourseActivity extends AppCompatActivity implements CourseAdapter.OnCourseListener{
     private static final String TAG = "CourseActivity";
     private static final int NUM_COLS  = 2;
@@ -37,6 +40,9 @@ public class CourseActivity extends AppCompatActivity implements CourseAdapter.O
     private  AlertDialog course_dialog;
     private View course_dialog_view;
     private final Calendar calendar = Calendar.getInstance();
+    /**
+     * The Term model.
+     */
     TermModel termModel;
 
     @Override
@@ -108,6 +114,10 @@ public class CourseActivity extends AppCompatActivity implements CourseAdapter.O
             }
         });
     }
+
+    /**
+     * Init recycler view.
+     */
     public void initRecyclerView(){
         recyclerView= findViewById(R.id.courses_recycler_view);
         courseAdapter = new CourseAdapter(this, courseModelList, this);
@@ -115,6 +125,10 @@ public class CourseActivity extends AppCompatActivity implements CourseAdapter.O
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         recyclerView.setAdapter(courseAdapter);
     }
+
+    /**
+     * Build course dialog.
+     */
     public void buildCourseDialog(){
         course_dialog_view = getLayoutInflater().inflate(R.layout.course_dialog, null);
         // Course title
@@ -194,6 +208,12 @@ public class CourseActivity extends AppCompatActivity implements CourseAdapter.O
     private void clearCourseDialogFields(){
         /*TODO- clear dialog fields*/
     }
+
+    /**
+     * Get instructor names string [ ].
+     *
+     * @return the string [ ]
+     */
     public String[] getInstructorNames(){
         // TODO : retrieve this from the database
         String[] string_array = {"instructor1", "instructor2", "instructor3", "instructor4"};

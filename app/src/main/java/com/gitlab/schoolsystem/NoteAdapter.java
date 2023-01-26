@@ -15,12 +15,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+/**
+ * The type Note adapter.
+ */
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
 
     private static final String TAG = "NoteAdapter";
     private Context context;
     private List<NoteModel> noteModelList;
 
+    /**
+     * Instantiates a new Note adapter.
+     *
+     * @param context       the context
+     * @param noteModelList the note model list
+     */
     public NoteAdapter(Context context, List<NoteModel> noteModelList){
         this.context = context;
         this.noteModelList = noteModelList;
@@ -74,9 +83,27 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
         return noteModelList.size();
     }
 
+    /**
+     * The type View holder.
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView note_title_view, note_body_view;
+        /**
+         * The Note title view.
+         */
+        TextView note_title_view, /**
+         * The Note body view.
+         */
+        note_body_view;
+        /**
+         * The Note delete.
+         */
         ImageButton note_delete;
+
+        /**
+         * Instantiates a new View holder.
+         *
+         * @param itemView the item view
+         */
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             note_title_view = itemView.findViewById(R.id.note_title_view);

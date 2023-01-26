@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * The type Course assessments fragment.
+ */
 public class CourseAssessmentsFragment extends Fragment {
     // add assessment components
     private AlertDialog assessment_dialog;
@@ -50,6 +53,10 @@ public class CourseAssessmentsFragment extends Fragment {
         });
         return fragment_view;
     }
+
+    /**
+     * Build assessment dialog.
+     */
     public void buildAssessmentDialog(){
         assessment_dialog_view = getLayoutInflater().inflate(R.layout.add_assessment_dialog, null);
         //  note title

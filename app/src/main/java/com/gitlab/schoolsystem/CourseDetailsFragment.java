@@ -19,6 +19,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * The type Course details fragment.
+ */
 public class CourseDetailsFragment extends Fragment {
     private CourseModel courseModel;
     private View view;

@@ -21,6 +21,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Course notes fragment.
+ */
 public class CourseNotesFragment extends Fragment {
     // add note dialog components
     private AlertDialog  note_dialog;
@@ -51,6 +54,10 @@ public class CourseNotesFragment extends Fragment {
         });
         return fragment_view;
     }
+
+    /**
+     * Build note dialog.
+     */
     public void buildNoteDialog(){
         note_dialog_view = getLayoutInflater().inflate(R.layout.add_note_dialog, null);
         //  note title

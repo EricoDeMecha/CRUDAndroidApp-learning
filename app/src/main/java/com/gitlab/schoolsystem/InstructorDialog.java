@@ -11,14 +11,33 @@ import androidx.appcompat.app.AlertDialog;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Instructor dialog.
+ */
 public class InstructorDialog {
     private AlertDialog instructor_dialog;
     private View instructor_dialog_view;
     private Context context;
     private static final InstructorDialog instance = new InstructorDialog();
+
+    /**
+     * Get instance instructor dialog.
+     *
+     * @return the instructor dialog
+     */
     public static InstructorDialog getInstance(){
         return instance;
     }
+
+    /**
+     * Build dialog alert dialog.
+     *
+     * @param context       the context
+     * @param courseAdapter the course adapter
+     * @param instructor    the instructor
+     * @param position      the position
+     * @return the alert dialog
+     */
     public AlertDialog buildDialog(Context context, CourseAdapter courseAdapter, InstructorModel instructor, int position) {
         this.context = context;
 

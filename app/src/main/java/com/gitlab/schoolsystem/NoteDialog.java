@@ -8,14 +8,33 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
 
+/**
+ * The type Note dialog.
+ */
 public class NoteDialog {
     private AlertDialog dialog;
     private View view;
     private Context context;
     private static final NoteDialog instance = new NoteDialog();
+
+    /**
+     * Get instance note dialog.
+     *
+     * @return the note dialog
+     */
     public static NoteDialog getInstance(){
         return instance;
     }
+
+    /**
+     * Build dialog alert dialog.
+     *
+     * @param context     the context
+     * @param noteAdapter the note adapter
+     * @param note        the note
+     * @param position    the position
+     * @return the alert dialog
+     */
     public AlertDialog buildDialog(Context context, NoteAdapter noteAdapter, NoteModel note, int position) {
         this.context = context;
 

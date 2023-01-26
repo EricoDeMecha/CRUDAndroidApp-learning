@@ -8,14 +8,33 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
 
+/**
+ * The type Assessment dialog.
+ */
 public class AssessmentDialog {
     private AlertDialog dialog;
     private View view;
     private Context context;
     private static final AssessmentDialog instance = new AssessmentDialog();
+
+    /**
+     * Get instance assessment dialog.
+     *
+     * @return the assessment dialog
+     */
     public static AssessmentDialog getInstance(){
         return instance;
     }
+
+    /**
+     * Build dialog alert dialog.
+     *
+     * @param context           the context
+     * @param assessmentAdapter the assessment adapter
+     * @param assessment        the assessment
+     * @param position          the position
+     * @return the alert dialog
+     */
     public AlertDialog buildDialog(Context context, AssessmentAdapter assessmentAdapter, AssessmentModel assessment, int position) {
         this.context = context;
         // Note dialog  elements

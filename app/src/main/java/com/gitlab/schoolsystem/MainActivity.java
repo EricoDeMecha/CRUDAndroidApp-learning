@@ -20,9 +20,18 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+/**
+ * The type Main activity.
+ */
 public class MainActivity extends AppCompatActivity implements TermAdapter.OnTermListener{
-    // dialog items
+    /**
+     * The Dialog.
+     */
+// dialog items
     AlertDialog dialog;
+    /**
+     * The M calendar.
+     */
     final Calendar m_calendar = Calendar.getInstance();
     private View dialog_view;
     private FloatingActionButton add;
@@ -30,8 +39,17 @@ public class MainActivity extends AppCompatActivity implements TermAdapter.OnTer
     private EditText m_start_date , m_end_date;
     private LinearLayout layout;
 
+    /**
+     * The Recycler view.
+     */
     RecyclerView recyclerView;
+    /**
+     * The Term adapter.
+     */
     TermAdapter termAdapter;
+    /**
+     * The Term model list.
+     */
     List<TermModel> termModelList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -18,6 +18,9 @@ import android.view.View;
 import com.gitlab.schoolsystem.ui.main.SectionsPagerAdapter;
 import com.gitlab.schoolsystem.databinding.ActivityCourseChildrenBinding;
 
+/**
+ * The type Course children.
+ */
 public class CourseChildren extends AppCompatActivity {
 
     private ActivityCourseChildrenBinding binding;
@@ -53,5 +56,11 @@ public class CourseChildren extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
+
+    /**
+     * Get course model course model.
+     *
+     * @return the course model
+     */
     public CourseModel getCourseModel(){ return this.courseModel; }
 }

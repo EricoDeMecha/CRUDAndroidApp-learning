@@ -15,12 +15,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+/**
+ * The type Assessment adapter.
+ */
 public class AssessmentAdapter extends RecyclerView.Adapter<AssessmentAdapter.ViewHolder> {
 
     private static final String TAG = "AssessAdapter";
     private Context context;
     private List<AssessmentModel> assessmentModelList;
 
+    /**
+     * Instantiates a new Assessment adapter.
+     *
+     * @param context             the context
+     * @param assessmentModelList the assessment model list
+     */
     public AssessmentAdapter(Context context, List<AssessmentModel> assessmentModelList){
         this.context = context;
         this.assessmentModelList = assessmentModelList;
@@ -76,8 +85,23 @@ public class AssessmentAdapter extends RecyclerView.Adapter<AssessmentAdapter.Vi
         return assessmentModelList.size();
     }
 
+    /**
+     * The type View holder.
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView assessment_name, assessment_due_date;
+        /**
+         * The Assessment name.
+         */
+        TextView assessment_name, /**
+         * The Assessment due date.
+         */
+        assessment_due_date;
+
+        /**
+         * Instantiates a new View holder.
+         *
+         * @param itemView the item view
+         */
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             assessment_name = itemView.findViewById(R.id.assessment_title);

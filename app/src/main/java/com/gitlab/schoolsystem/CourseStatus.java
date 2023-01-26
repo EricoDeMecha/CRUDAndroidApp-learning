@@ -1,5 +1,23 @@
 package com.gitlab.schoolsystem;
 
+/**
+ * The enum Course status.
+ */
 public enum CourseStatus {
-    INPROGRESS, COMPLETED, DROPPED, PLANTOTAKE
+    /**
+     * Inprogress course status.
+     */
+    INPROGRESS,
+    /**
+     * Completed course status.
+     */
+    COMPLETED,
+    /**
+     * Dropped course status.
+     */
+    DROPPED,
+    /**
+     * Plantotake course status.
+     */
+    PLANTOTAKE
 }

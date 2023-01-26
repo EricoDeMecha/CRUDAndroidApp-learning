@@ -16,11 +16,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+/**
+ * The type Course adapter.
+ */
 public class CourseAdapter  extends RecyclerView.Adapter<CourseAdapter.ViewHolder>{
     private static final String TAG = "CourseAdapter";
     private Context context;
     private List<CourseModel> courseModelList;
     private OnCourseListener  onCourseListener;
+
+    /**
+     * Instantiates a new Course adapter.
+     *
+     * @param context          the context
+     * @param courseModelList  the course model list
+     * @param onCourseListener the on course listener
+     */
     public CourseAdapter(Context context, List<CourseModel> courseModelList, OnCourseListener onCourseListener) {
         this.courseModelList = courseModelList;
         this.context = context;
@@ -85,9 +96,37 @@ public class CourseAdapter  extends RecyclerView.Adapter<CourseAdapter.ViewHolde
         return courseModelList.size();
     }
 
+    /**
+     * The type View holder.
+     */
     public  class  ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView course_title_view, course_start_date_view, course_end_date_view, course_status_view, course_instructor_view;
+        /**
+         * The Course title view.
+         */
+        TextView course_title_view, /**
+         * The Course start date view.
+         */
+        course_start_date_view, /**
+         * The Course end date view.
+         */
+        course_end_date_view, /**
+         * The Course status view.
+         */
+        course_status_view, /**
+         * The Course instructor view.
+         */
+        course_instructor_view;
+        /**
+         * The On course listener.
+         */
         OnCourseListener onCourseListener;
+
+        /**
+         * Instantiates a new View holder.
+         *
+         * @param itemView         the item view
+         * @param onCourseListener the on course listener
+         */
         public ViewHolder(@NonNull View itemView, OnCourseListener onCourseListener) {
             super(itemView);
             course_title_view = itemView.findViewById(R.id.course_title);
@@ -105,7 +144,16 @@ public class CourseAdapter  extends RecyclerView.Adapter<CourseAdapter.ViewHolde
             onCourseListener.onCourseClicked(getAdapterPosition());
         }
     }
+
+    /**
+     * The interface On course listener.
+     */
     public interface OnCourseListener{
+        /**
+         * On course clicked.
+         *
+         * @param position the position
+         */
         void onCourseClicked(int position);
     }
 }

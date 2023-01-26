@@ -9,6 +9,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+/**
+ * The type Date picker.
+ */
 public class DatePicker {
     private static final DatePicker instance = new DatePicker();
     private Calendar calendar;
@@ -17,10 +20,21 @@ public class DatePicker {
         calendar = Calendar.getInstance();
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static DatePicker getInstance() {
         return instance;
     }
 
+    /**
+     * Select date.
+     *
+     * @param context   the context
+     * @param date_view the date view
+     */
     public void selectDate( Context context, EditText date_view) {
         date_view.setOnClickListener(new View.OnClickListener() {
             @Override
