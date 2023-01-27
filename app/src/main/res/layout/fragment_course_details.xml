@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#FFA0A0"
     android:orientation="vertical"
-    tools:context=".CourseChildren">
+    tools:context=".CourseChildrenActivity">
 
     <EditText
         android:id="@+id/coursetitle_edit"

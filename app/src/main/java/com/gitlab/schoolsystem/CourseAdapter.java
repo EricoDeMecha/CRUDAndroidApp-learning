@@ -14,35 +14,20 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * The type Course adapter.
- */
 public class CourseAdapter  extends RecyclerView.Adapter<CourseAdapter.ViewHolder>{
     private static final String TAG = "CourseAdapter";
-    private Context context;
-    private List<CourseModel> courseModelList;
-    private OnCourseListener  onCourseListener;
 
-    /**
-     * Instantiates a new Course adapter.
-     *
-     * @param context          the context
-     * @param courseModelList  the course model list
-     * @param onCourseListener the on course listener
-     */
-    public CourseAdapter(Context context, List<CourseModel> courseModelList, OnCourseListener onCourseListener) {
-        this.courseModelList = courseModelList;
-        this.context = context;
-        this.onCourseListener = onCourseListener;
-    }
+    private List<CourseModel> courseModelList = new ArrayList<>();
+    private OnCourseListener listener;
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.course, parent, false);
-        return  new ViewHolder(view, onCourseListener);
+        return  new ViewHolder(view);
     }
 
     @Override
@@ -58,35 +43,17 @@ public class CourseAdapter  extends RecyclerView.Adapter<CourseAdapter.ViewHolde
         holder.course_instructor_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO : add an option to update instructor's details
-                int position = holder.getAdapterPosition();
-                InstructorModel instructor  = courseModelList.get(position).getCourse_instructor();
-                // create a dialog
-                InstructorDialog.getInstance().buildDialog(context, CourseAdapter.this, instructor, position).show();
+                int current_position = holder.getAdapterPosition();
+                listener.onInstructorClicked(courseModelList.get(current_position));
             }
         });
-
-        ImageButton delete_btn = holder.itemView.findViewById(R.id.course_delete);
-        delete_btn.setOnClickListener(new View.OnClickListener() {
+        holder.delete_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(holder.course_title_view.getContext());
-                builder.setTitle("Are you sure?");
-                builder.setMessage("Operation cannot be undone.");
-                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        courseModelList.remove(holder.getAdapterPosition());
-                        notifyItemRemoved(holder.getAdapterPosition());
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(holder.course_title_view.getContext(), "Delete canceled", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                builder.show();
+                int current_position = holder.getAdapterPosition();
+                if(listener != null && current_position != RecyclerView.NO_POSITION){
+                    listener.onDeleteClicked(courseModelList.get(current_position));
+                }
             }
         });
     }
@@ -95,65 +62,45 @@ public class CourseAdapter  extends RecyclerView.Adapter<CourseAdapter.ViewHolde
     public int getItemCount() {
         return courseModelList.size();
     }
-
-    /**
-     * The type View holder.
-     */
-    public  class  ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        /**
-         * The Course title view.
-         */
-        TextView course_title_view, /**
-         * The Course start date view.
-         */
-        course_start_date_view, /**
-         * The Course end date view.
-         */
-        course_end_date_view, /**
-         * The Course status view.
-         */
-        course_status_view, /**
-         * The Course instructor view.
-         */
+    public void setCourseModelList(List<CourseModel> courseModels){
+        this.courseModelList = courseModels;
+        notifyDataSetChanged();
+    }
+    public CourseModel getCourseAt(int position) { return  courseModelList.get(position); }
+    public  class  ViewHolder extends RecyclerView.ViewHolder {
+        TextView course_title_view,
+        course_start_date_view,
+        course_end_date_view,
+        course_status_view,
         course_instructor_view;
-        /**
-         * The On course listener.
-         */
-        OnCourseListener onCourseListener;
-
-        /**
-         * Instantiates a new View holder.
-         *
-         * @param itemView         the item view
-         * @param onCourseListener the on course listener
-         */
-        public ViewHolder(@NonNull View itemView, OnCourseListener onCourseListener) {
+        ImageButton delete_btn;
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
             course_title_view = itemView.findViewById(R.id.course_title);
             course_start_date_view = itemView.findViewById(R.id.course_start_date);
             course_end_date_view =  itemView.findViewById(R.id.course_end_date);
             course_status_view =  itemView.findViewById(R.id.course_status);
             course_instructor_view =  itemView.findViewById(R.id.course_instructor);
+            delete_btn = itemView.findViewById(R.id.course_delete);
             // click listener
-            this.onCourseListener = onCourseListener;
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View view) {
-            onCourseListener.onCourseClicked(getAdapterPosition());
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int current_position = getAdapterPosition();
+                    if(listener != null && current_position != RecyclerView.NO_POSITION){
+                        listener.onCourseClicked(courseModelList.get(current_position));
+                    }
+                }
+            });
         }
     }
 
-    /**
-     * The interface On course listener.
-     */
     public interface OnCourseListener{
-        /**
-         * On course clicked.
-         *
-         * @param position the position
-         */
-        void onCourseClicked(int position);
+        void onCourseClicked(CourseModel course);
+        void onDeleteClicked(CourseModel course);
+        void onInstructorClicked(CourseModel course);
+    }
+    public void setCourseListerOnClick(OnCourseListener listener){
+        this.listener = listener;
     }
 }

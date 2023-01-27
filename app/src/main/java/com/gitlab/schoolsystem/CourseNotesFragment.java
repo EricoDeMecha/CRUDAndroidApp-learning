@@ -7,11 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -21,87 +24,66 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * The type Course notes fragment.
- */
 public class CourseNotesFragment extends Fragment {
-    // add note dialog components
-    private AlertDialog  note_dialog;
-    private View note_dialog_view;
-
-    private FloatingActionButton note_add_button;
-    private final List<NoteModel> noteModelList = new ArrayList<>();
+    private NoteModelViewModel noteModelViewModel;
     private NoteAdapter noteAdapter;
-    private RecyclerView recyclerView;
-    private final int NUM_COLS = 3;
-    private View fragment_view;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        fragment_view = inflater.inflate(R.layout.fragment_course_notes, container, false);
+        View fragment_view = inflater.inflate(R.layout.fragment_course_notes, container, false);
+        RecyclerView recyclerView = fragment_view.findViewById(R.id.note_recycler_view);
+        NoteAdapter noteAdapter = new NoteAdapter();
+        int NUM_COLS = 3;
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(NUM_COLS, LinearLayoutManager.VERTICAL));
+        recyclerView.setAdapter(noteAdapter);
 
-        // prepopulate the notelist
-        getNotes();
+        noteModelViewModel = ViewModelProviders.of(requireActivity()).get(NoteModelViewModel.class);
+        noteModelViewModel.getAllNotes().observe(requireActivity(), new Observer<List<NoteModel>>() {
+            @Override
+            public void onChanged(List<NoteModel> noteModelList) {
+                noteAdapter.setNoteModelList(noteModelList);
+            }
+        });
 
-        initRecyclerView();
-        buildNoteDialog();
-        note_add_button = fragment_view.findViewById(R.id.add_note_button);
+
+        FloatingActionButton note_add_button = fragment_view.findViewById(R.id.add_note_button);
         note_add_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                note_dialog.show();
+                new NoteDialog(requireContext(), noteModelViewModel, null, true).show();
+            }
+        });
+        noteAdapter.setNoteListener(new NoteAdapter.OnItemListener() {
+            @Override
+            public void onItemClicked(NoteModel note) {
+                new NoteDialog(requireContext(), noteModelViewModel,  note, false).show();
+            }
+
+            @Override
+            public void onDeleteClicked(NoteModel note) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+                builder.setTitle("Are you sure?");
+                builder.setMessage("Operation cannot be undone.");
+                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        noteModelViewModel.delete(note);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+                builder.show();
             }
         });
         return fragment_view;
     }
-
-    /**
-     * Build note dialog.
-     */
-    public void buildNoteDialog(){
-        note_dialog_view = getLayoutInflater().inflate(R.layout.add_note_dialog, null);
-        //  note title
-        EditText note_title = note_dialog_view.findViewById(R.id.note_title_edit);
-        // note body
-        EditText note_body = note_dialog_view.findViewById(R.id.note_body_edit);
-        // builder
-        AlertDialog.Builder builder = new AlertDialog.Builder(this.requireContext());
-        builder.setView(note_dialog_view);
-        builder.setTitle("Draft note")
-                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if(!Utils.isEmpty(note_title) && !Utils.isEmpty(note_body)){
-                            noteModelList.add(new NoteModel(
-                                    note_title.getText().toString(),
-                                    note_body.getText().toString()
-                            ));
-                            noteAdapter.notifyItemInserted(noteModelList.size()-1);
-                        }
-                    }
-                })
-                .setNegativeButton("Discard", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        /*Clear  and note */
-                        note_body.getText().clear();
-                        note_title.getText().clear();
-                    }
-                });
-        note_dialog = builder.create();
-    }
-    private void initRecyclerView(){
-        recyclerView = fragment_view.findViewById(R.id.note_recycler_view);
-        noteAdapter = new NoteAdapter(getContext(), noteModelList);
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(NUM_COLS, LinearLayoutManager.VERTICAL));
-        recyclerView.setAdapter(noteAdapter);
-    }
     private void getNotes(){
         /*TODO; get the notes from the database*/
-        noteModelList.add(new NoteModel("Title1", "Body1"));
-        noteModelList.add(new NoteModel("Title2", "Body2"));
-        noteModelList.add(new NoteModel("Title3", "Body3"));
-        noteModelList.add(new NoteModel("Title4", "Body4"));
-        noteModelList.add(new NoteModel("Title5", "Body5"));
+
     }
 }

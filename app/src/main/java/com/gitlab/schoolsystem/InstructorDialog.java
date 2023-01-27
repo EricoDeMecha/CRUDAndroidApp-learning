@@ -11,45 +11,30 @@ import androidx.appcompat.app.AlertDialog;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * The type Instructor dialog.
- */
 public class InstructorDialog {
-    private AlertDialog instructor_dialog;
-    private View instructor_dialog_view;
-    private Context context;
-    private static final InstructorDialog instance = new InstructorDialog();
 
-    /**
-     * Get instance instructor dialog.
-     *
-     * @return the instructor dialog
-     */
-    public static InstructorDialog getInstance(){
-        return instance;
+    private Context context;
+    private CourseModelViewModel courseModelViewModel;
+    private CourseModel courseModel;
+    private InstructorModel instructor;
+
+    public InstructorDialog(Context context, CourseModelViewModel courseModelViewModel, CourseModel courseModel){
+        this.context = context;
+        this.courseModelViewModel = courseModelViewModel;
+        this.courseModel = courseModel;
     }
 
-    /**
-     * Build dialog alert dialog.
-     *
-     * @param context       the context
-     * @param courseAdapter the course adapter
-     * @param instructor    the instructor
-     * @param position      the position
-     * @return the alert dialog
-     */
-    public AlertDialog buildDialog(Context context, CourseAdapter courseAdapter, InstructorModel instructor, int position) {
-        this.context = context;
-
+    public void show() {
         // Instructor dialog  elements
-        instructor_dialog_view = LayoutInflater.from(context).inflate(R.layout.instructor_dialog, null);
+        View  instructor_dialog_view = LayoutInflater.from(context).inflate(R.layout.instructor_dialog, null);
         EditText instructor_name = instructor_dialog_view.findViewById(R.id.instructor_name);
         EditText instructor_phone = instructor_dialog_view.findViewById(R.id.instructor_phone);
         EditText instructor_email = instructor_dialog_view.findViewById(R.id.instructor_email);
         // update elements
-        instructor_name.setText(instructor.getName());
-        instructor_phone.setText(instructor.getPhone());
-        instructor_email.setText(instructor.getEmail_address());
+            instructor = courseModel.getCourse_instructor();
+            instructor_name.setText(instructor.getName());
+            instructor_phone.setText(instructor.getPhone());
+            instructor_email.setText(instructor.getEmail_address());
         // build the dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(instructor_dialog_view);
@@ -58,10 +43,12 @@ public class InstructorDialog {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if(!Utils.isEmpty(instructor_name) && !Utils.isEmpty(instructor_phone) && !Utils.isEmpty(instructor_email)){
-                            instructor.setName(instructor_name.getText().toString());
-                            instructor.setPhone(instructor_phone.getText().toString());
-                            instructor.setEmail_address(instructor_email.getText().toString());
-                            courseAdapter.notifyItemChanged(position);
+                            String instructor_name_ = instructor_name.getText().toString();
+                            String instructor_phone_ = instructor_phone.getText().toString();
+                            String instructor_email_ = instructor_email.getText().toString();
+                            InstructorModel new_instructor = new InstructorModel(instructor_name_, instructor_phone_, instructor_email_);
+                            courseModel.setCourse_instructor(new_instructor);
+                            courseModelViewModel.update(courseModel);
                         }
                     }
                 })
@@ -71,7 +58,6 @@ public class InstructorDialog {
                         // do nothing
                     }
                 });
-        instructor_dialog = builder.create();
-        return instructor_dialog;
+     builder.create().show();
     }
 }

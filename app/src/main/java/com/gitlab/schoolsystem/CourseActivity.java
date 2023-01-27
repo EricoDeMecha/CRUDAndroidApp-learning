@@ -4,6 +4,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -11,40 +13,25 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Pair;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
-/**
- * The type Course activity.
- */
-public class CourseActivity extends AppCompatActivity implements CourseAdapter.OnCourseListener{
+public class CourseActivity extends AppCompatActivity{
+    public static final String TITLE =
+            "com.gitlab.schoolsystem.TermModel";
+    public static final String TITLE2 =
+            "com.gitlab.schoolsystem.CourseModel";
     private static final String TAG = "CourseActivity";
     private static final int NUM_COLS  = 2;
-    private List<CourseModel> courseModelList;
-    private FloatingActionButton add_course_btn;
-    private CourseAdapter courseAdapter;
-    private RecyclerView recyclerView;
-    // course dialog
-    private  AlertDialog course_dialog;
-    private View course_dialog_view;
-    private final Calendar calendar = Calendar.getInstance();
-    /**
-     * The Term model.
-     */
-    TermModel termModel;
 
+    private TermModel termModel;
+
+    private CourseModelViewModel courseModelViewModel;
+    private CourseAdapter courseAdapter;
     @Override
     public boolean onSupportNavigateUp() {
         NavUtils.navigateUpFromSameTask(this);
@@ -56,174 +43,85 @@ public class CourseActivity extends AppCompatActivity implements CourseAdapter.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_of_courses);
 
-        if(getIntent().hasExtra("Term")){
-            termModel = getIntent().getParcelableExtra("Term");
+        if(getIntent().hasExtra(CourseActivity.TITLE)){
+            termModel = getIntent().getParcelableExtra(CourseActivity.TITLE);
         }
         // set up a back button on the toolbar
-        /*ActionBar actionBar  = getSupportActionBar();
-        actionBar.setTitle(termModel.getTerm_name());
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(true);*/
         ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
-            actionBar.setTitle(termModel.getTerm_name());
+            Intent data = getIntent();
+            if(data.hasExtra(CourseActivity.TITLE2)){
+                actionBar.setTitle(data.getStringExtra(CourseActivity.TITLE2));
+            }
+            if(termModel != null){
+                actionBar.setTitle(termModel.getTerm_name());
+            }
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        // init couseModelList
-        courseModelList  = new ArrayList<>();
-        // TODO Use term details to update the course details
-        courseModelList.add(new CourseModel(
-           "Course1",
-           "2020-03-01",
-           "2020-10-01",
-           CourseStatus.INPROGRESS,
-           new InstructorModel("Instructor1", "12345678", "instructor1@gmail.coc")
-        ));
-        courseModelList.add(new CourseModel(
-                "Course2",
-                "2020-03-01",
-                "2020-10-01",
-                CourseStatus.INPROGRESS,
-                new InstructorModel("Instructor2", "12345678", "instructor1@gmail.coc")
-        ));
-
-        courseModelList.add(new CourseModel(
-                "Course3",
-                "2020-03-01",
-                "2020-10-01",
-                CourseStatus.INPROGRESS,
-                new InstructorModel("Instructor3", "12345678", "instructor1@gmail.coc")
-        ));
-        courseModelList.add(new CourseModel(
-                "Course4",
-                "2020-03-01",
-                "2020-10-01",
-                CourseStatus.INPROGRESS,
-                new InstructorModel("Instructor4", "12345678", "instructor1@gmail.coc")
-        ));
 
         // init recyclerview
-        initRecyclerView();
-        // build dialog window
-        buildCourseDialog();
-        add_course_btn = findViewById(R.id.add_course);
-        add_course_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                course_dialog.show();
-            }
-        });
-    }
-
-    /**
-     * Init recycler view.
-     */
-    public void initRecyclerView(){
-        recyclerView= findViewById(R.id.courses_recycler_view);
-        courseAdapter = new CourseAdapter(this, courseModelList, this);
+        //    private CourseAdapter courseAdapter;
+        RecyclerView recyclerView = findViewById(R.id.courses_recycler_view);
+        courseAdapter = new CourseAdapter();
         StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(NUM_COLS, LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
         recyclerView.setAdapter(courseAdapter);
-    }
 
-    /**
-     * Build course dialog.
-     */
-    public void buildCourseDialog(){
-        course_dialog_view = getLayoutInflater().inflate(R.layout.course_dialog, null);
-        // Course title
-        EditText course_title_view = course_dialog_view.findViewById(R.id.coursetitle_edit);
-        // course start date
-        EditText course_start_date = course_dialog_view.findViewById(R.id.startdate_edit);
-        DatePicker.getInstance().selectDate(this, course_start_date);
-        // course end date
-        EditText course_end_date = course_dialog_view.findViewById(R.id.enddate_edit);
-        DatePicker.getInstance().selectDate(this, course_end_date);
-        //  course status spinner
-        Spinner status_spinner = course_dialog_view.findViewById(R.id.status_spinner);
-        String[] status_resource_array = getResources().getStringArray(R.array.course_status_list);
-        AtomicReference<String> selected_status  = new AtomicReference<>();
-        setupSpinner(status_spinner, status_resource_array, (pair)->{
-            Spinner spinner = pair.first;
-            selected_status.set(pair.second);
-        } );
-        // instructor spinner
-        Spinner instructor_spinner = course_dialog_view.findViewById(R.id.instructor_spinner);
-        String[] instructor_resource_array =  getInstructorNames();
-        AtomicReference<String> selected_instructor = new AtomicReference<>();
-        setupSpinner(instructor_spinner, instructor_resource_array, (pair)->{
-            Spinner spinner = pair.first;
-            selected_instructor.set(pair.second);
+
+        courseModelViewModel = ViewModelProviders.of(this).get(CourseModelViewModel.class);
+        courseModelViewModel.getAllCourses().observe(this, new Observer<List<CourseModel>>() {
+            @Override
+            public void onChanged(List<CourseModel> courseModels) {
+                courseAdapter.setCourseModelList(courseModels);
+            }
         });
-        // builder
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setView(course_dialog_view);
-        builder.setTitle("Enter the course details")
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        // add dialog
+        FloatingActionButton add_course_btn = findViewById(R.id.add_course);
+        add_course_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                public CourseDialog(Context context, CourseModelViewModel courseModelViewModel, CourseModel courseModel, boolean isInserting){
+                List<CourseModel> temp_courses =  courseModelViewModel.getAllCourses().getValue();
+                new CourseDialog(CourseActivity.this, courseModelViewModel, temp_courses).show();
+            }
+        });
+        // delete dialog
+        courseAdapter.setCourseListerOnClick(new CourseAdapter.OnCourseListener() {
+            @Override
+            public void onCourseClicked(CourseModel course) {
+                Intent intent = new Intent(CourseActivity.this, CourseChildrenActivity.class);
+                intent.putExtra(CourseActivity.TITLE2, course);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onDeleteClicked(CourseModel course) {
+                // create a delete confirmation dialog
+                AlertDialog.Builder builder = new AlertDialog.Builder(CourseActivity.this);
+                builder.setTitle("Are you sure?");
+                builder.setMessage("Operation cannot be undone.");
+                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if(!Utils.isEmpty(course_title_view) && !Utils.isEmpty(course_start_date) && !Utils.isEmpty(course_start_date) && selected_status!=null && selected_instructor != null){
-                            courseModelList.add(new CourseModel(
-                                    course_title_view.getText().toString(),
-                                    course_start_date.getText().toString(),
-                                    course_end_date.getText().toString(),
-                                    CourseStatus.valueOf(selected_status.toString()),
-                                    new InstructorModel(selected_instructor.toString())));
-                            courseAdapter.notifyItemInserted(courseModelList.size()-1);
-                            clearCourseDialogFields();
-                            recyclerView.scrollToPosition(courseModelList.size()-1);
-                        }
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        clearCourseDialogFields();
+                        // deleted selected course
+                        courseModelViewModel.delete(course);
                     }
                 });
-        course_dialog  = builder.create();
-    }
-    private void setupSpinner(final Spinner spinner , String[] resource_array, Consumer<Pair<Spinner, String>>callback){
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                R.layout.custom_spinner,
-                resource_array
-        );
-        adapter.setDropDownViewResource(R.layout.custom_spinner_dropdown);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String selectedItem = spinner.getItemAtPosition(i).toString();
-                callback.accept(new Pair<>(spinner, selectedItem));
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(CourseActivity.this, "Delete canceled", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                builder.show();
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
+            public void onInstructorClicked(CourseModel course) {
+                // create a dialog with instructor details
+                //     public InstructorDialog(Context context, CourseModelViewModel courseModelViewModel, CourseModel courseModel){
+                new InstructorDialog(CourseActivity.this, courseModelViewModel, course).show();
             }
         });
-    }
-
-    private void clearCourseDialogFields(){
-        /*TODO- clear dialog fields*/
-    }
-
-    /**
-     * Get instructor names string [ ].
-     *
-     * @return the string [ ]
-     */
-    public String[] getInstructorNames(){
-        // TODO : retrieve this from the database
-        String[] string_array = {"instructor1", "instructor2", "instructor3", "instructor4"};
-        return string_array;
-    }
-
-    @Override
-    public void onCourseClicked(int position) {
-        Intent intent = new Intent(this, CourseChildren.class);
-        intent.putExtra("CourseModel", courseModelList.get(position));
-        startActivity(intent);
     }
 }

@@ -1,119 +1,82 @@
 package com.gitlab.schoolsystem;
 
-import androidx.appcompat.app.AlertDialog;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.Toast;
 
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-/**
- * The type Main activity.
- */
-public class MainActivity extends AppCompatActivity implements TermAdapter.OnTermListener{
-    /**
-     * The Dialog.
-     */
-// dialog items
-    AlertDialog dialog;
-    /**
-     * The M calendar.
-     */
-    final Calendar m_calendar = Calendar.getInstance();
-    private View dialog_view;
-    private FloatingActionButton add;
-    private EditText term_name;
-    private EditText m_start_date , m_end_date;
-    private LinearLayout layout;
+public class MainActivity extends AppCompatActivity{
+    public static final String TITLE =
+            "com.gitlab.schoolsystem.TermModel";
+    private TermAdapter termAdapter;
+    private TermModelViewModel termModelViewModel;
 
-    /**
-     * The Recycler view.
-     */
-    RecyclerView recyclerView;
-    /**
-     * The Term adapter.
-     */
-    TermAdapter termAdapter;
-    /**
-     * The Term model list.
-     */
-    List<TermModel> termModelList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_screen);
 
-        add = findViewById(R.id.add);
+        RecyclerView recyclerView = findViewById(R.id.recycleview);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        termAdapter = new TermAdapter();
+        recyclerView.setAdapter(termAdapter);
 
-        buildTermDialog();
+        termModelViewModel = ViewModelProviders.of(this).get(TermModelViewModel.class);
+        termModelViewModel.getAllTerms().observe(this, new Observer<List<TermModel>>() {
+            @Override
+            public void onChanged(List<TermModel> termModels) {
+                termAdapter.setTermList(termModels);
+            }
+        });
+        FloatingActionButton add = findViewById(R.id.add);
 
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dialog.show();;
+                new TermDialog(MainActivity.this, termModelViewModel, null, true).show();
             }
         });
+        // add swipe right or left to delete
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
 
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                termModelViewModel.delete(termAdapter.getTermAt(viewHolder.getAdapterPosition()));
+                Toast.makeText(MainActivity.this, "Note  deleted", Toast.LENGTH_SHORT).show();
+            }
+        }).attachToRecyclerView(recyclerView);
+        // set listeners
+        termAdapter.setListenerOnClick(new TermAdapter.OnTermListener() {
+            @Override
+            public void onTermClicked(TermModel term) {
+                Intent  intent  = new Intent(MainActivity.this, CourseActivity.class);
+                intent.putExtra(MainActivity.TITLE, term);
+                startActivity(intent);
+            }
 
-        termModelList = new ArrayList<>();
-        recyclerView =  findViewById(R.id.recycleview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        termAdapter = new TermAdapter( this, termModelList, this);
-        recyclerView.setAdapter(termAdapter);
-
-    }
-    private void clearDialogFields(){
-        term_name.getText().clear();
-        m_start_date.getText().clear();
-        m_end_date.getText().clear();
-    }
-    private void buildTermDialog() {
-        dialog_view = getLayoutInflater().inflate(R.layout.term_dialog, null) ;
-        m_start_date = dialog_view.findViewById(R.id.startdate);
-        m_end_date = dialog_view.findViewById(R.id.enddate);
-        DatePicker.getInstance().selectDate(this, m_start_date);
-        DatePicker.getInstance().selectDate(this, m_end_date);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        term_name = dialog_view.findViewById(R.id.termEdit);
-        builder.setView(dialog_view);
-        builder.setTitle("Enter term name:")
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if(!Utils.isEmpty(term_name) && !Utils.isEmpty(m_start_date) && !Utils.isEmpty(m_end_date)){
-                            termModelList.add(new TermModel(term_name.getText().toString(), m_start_date.getText().toString(), m_end_date.getText().toString()));
-                            termAdapter.notifyItemInserted(termModelList.size()-1);
-                            clearDialogFields();
-                            recyclerView.scrollToPosition(termModelList.size()-1);
-                        }
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        clearDialogFields();
-                    }
-                });
-        dialog = builder.create();
-    }
-
-    @Override
-    public void onTermClicked(int position) {
-        Intent intent = new Intent(this, CourseActivity.class);
-        intent.putExtra("Term", termModelList.get(position));
-        startActivity(intent);
+            @Override
+            public void onUpdateButtonClicked(TermModel term) {
+                // create a dialog that reports back here
+                new TermDialog(MainActivity.this,  termModelViewModel, term, false).show();
+            }
+        });
     }
 }

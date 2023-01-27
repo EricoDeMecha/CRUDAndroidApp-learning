@@ -13,27 +13,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * The type Note adapter.
- */
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
 
     private static final String TAG = "NoteAdapter";
-    private Context context;
-    private List<NoteModel> noteModelList;
 
-    /**
-     * Instantiates a new Note adapter.
-     *
-     * @param context       the context
-     * @param noteModelList the note model list
-     */
-    public NoteAdapter(Context context, List<NoteModel> noteModelList){
-        this.context = context;
-        this.noteModelList = noteModelList;
-    }
+    private List<NoteModel> noteModelList = new ArrayList<>();
+    private OnItemListener listener;
+
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -49,31 +39,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
         holder.note_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(holder.note_title_view.getContext());
-                builder.setTitle("Are you sure?");
-                builder.setMessage("Operation cannot be undone.");
-                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        noteModelList.remove(holder.getAdapterPosition());
-                        notifyItemRemoved(holder.getAdapterPosition());
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(holder.note_title_view.getContext(), "Delete canceled", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                builder.show();
-            }
-        });
-        holder.note_body_view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int position = holder.getAdapterPosition();
-                NoteModel model = noteModelList.get(position);
-                NoteDialog.getInstance().buildDialog(context, NoteAdapter.this, model, position).show();
+                listener.onDeleteClicked(noteModelList.get(holder.getAdapterPosition()));
             }
         });
     }
@@ -83,32 +49,40 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
         return noteModelList.size();
     }
 
-    /**
-     * The type View holder.
-     */
+    public void setNoteModelList(List<NoteModel> noteModelList){
+        this.noteModelList = noteModelList;
+        notifyDataSetChanged();
+    }
+    public NoteModel getAt(int position){
+        return noteModelList.get(position);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
-        /**
-         * The Note title view.
-         */
-        TextView note_title_view, /**
-         * The Note body view.
-         */
+        TextView note_title_view,
         note_body_view;
-        /**
-         * The Note delete.
-         */
         ImageButton note_delete;
 
-        /**
-         * Instantiates a new View holder.
-         *
-         * @param itemView the item view
-         */
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             note_title_view = itemView.findViewById(R.id.note_title_view);
             note_body_view = itemView.findViewById(R.id.note_body_view);
             note_delete = itemView.findViewById(R.id.note_delete);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int current_position = getAdapterPosition();
+                    if(listener != null && current_position != RecyclerView.NO_POSITION){
+                        listener.onItemClicked(noteModelList.get(current_position));
+                    }
+                }
+            });
         }
+    }
+    public interface OnItemListener{
+        void onItemClicked(NoteModel note);
+        void onDeleteClicked(NoteModel note);
+    }
+    public void setNoteListener(OnItemListener listener){
+        this.listener = listener;
     }
 }

@@ -1,9 +1,8 @@
 package com.gitlab.schoolsystem;
 
+import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.appcompat.app.ActionBar;
@@ -11,24 +10,24 @@ import androidx.core.app.NavUtils;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-
 import com.gitlab.schoolsystem.ui.main.SectionsPagerAdapter;
 import com.gitlab.schoolsystem.databinding.ActivityCourseChildrenBinding;
 
-/**
- * The type Course children.
- */
-public class CourseChildren extends AppCompatActivity {
+public class CourseChildrenActivity extends AppCompatActivity {
 
     private ActivityCourseChildrenBinding binding;
     private CourseModel courseModel;
+    public static final String TITLE2 =
+            "com.gitlab.schoolsystem.CourseModel";
+    private static String term_name;
 
     @Override
     public boolean onSupportNavigateUp() {
-        NavUtils.navigateUpFromSameTask(this);
+        Intent intent = NavUtils.getParentActivityIntent(this);
+        if(intent != null){
+            intent.putExtra(TITLE2, "Term" );
+        }
+        NavUtils.navigateUpTo(this, intent);
         return true;
     }
 
@@ -46,8 +45,8 @@ public class CourseChildren extends AppCompatActivity {
         tabs.setupWithViewPager(viewPager);
 
         // read intent
-        if(getIntent().hasExtra("CourseModel")){
-            courseModel = getIntent().getParcelableExtra("CourseModel");
+        if(getIntent().hasExtra(TITLE2)){
+            courseModel = getIntent().getParcelableExtra(TITLE2);
         }
 
         ActionBar actionBar = getSupportActionBar();
@@ -57,10 +56,6 @@ public class CourseChildren extends AppCompatActivity {
         }
     }
 
-    /**
-     * Get course model course model.
-     *
-     * @return the course model
-     */
     public CourseModel getCourseModel(){ return this.courseModel; }
+
 }

@@ -13,7 +13,7 @@
         android:theme="@style/Theme.SchoolSystem"
         tools:targetApi="31" >
         <activity
-            android:name=".CourseChildren"
+            android:name=".CourseChildrenActivity"
             android:exported="false"
             android:label="@string/title_activity_course_children"
             android:parentActivityName=".CourseActivity"
@@ -32,7 +32,8 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="true" >
+            android:exported="true"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
@@ -17,7 +16,6 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 /**
  * The type Course details fragment.
@@ -34,7 +32,7 @@ public class CourseDetailsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_course_details, container, false);
         save_button = view.findViewById(R.id.save_button);
-        courseModel = ((CourseChildren) requireActivity()).getCourseModel();
+        courseModel = ((CourseChildrenActivity) requireActivity()).getCourseModel();
         setElements();
         save_button.setOnClickListener(new View.OnClickListener() {
             @Override

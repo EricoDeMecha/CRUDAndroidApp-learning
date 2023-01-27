@@ -1,83 +1,43 @@
 package com.gitlab.schoolsystem;
 
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * The type Term adapter.
- */
 public class TermAdapter extends RecyclerView.Adapter<TermAdapter.ViewHolder> {
-    /**
-     * The Context.
-     */
-    Context context;
-    /**
-     * The Term list.
-     */
-    List<TermModel> termList;
-    private OnTermListener onTermListener;
+    private List<TermModel> termList = new ArrayList<>();
+    private OnTermListener listener;
 
-    /**
-     * Instantiates a new Term adapter.
-     *
-     * @param context        the context
-     * @param termList       the term list
-     * @param onTermListener the on term listener
-     */
-    public TermAdapter(Context context, List<TermModel> termList, OnTermListener onTermListener){
-        this.context = context;
-        this.termList  = termList;
-        this.onTermListener = onTermListener;
-    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.term,parent, false);
-        return new ViewHolder(view,onTermListener);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.term_name_view.setText(termList.get(position).getTerm_name());
-        holder.start_date_view.setText(termList.get(position).getStart_date());
-        holder.end_date_view.setText(termList.get(position).getEnd_date());
+        TermModel termModel = termList.get(position);
+        holder.term_name_view.setText(termModel.getTerm_name());
+        holder.start_date_view.setText(termModel.getStart_date());
+        holder.end_date_view.setText(termModel.getEnd_date());
 
-        Button delete_btn = holder.itemView.findViewById(R.id.deletebtn);
-        delete_btn.setOnClickListener(new View.OnClickListener() {
+        holder.update_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(holder.term_name_view.getContext());
-                builder.setTitle("Are you sure?");
-                builder.setMessage("Operation cannot be undone.");
-                builder.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        termList.remove(holder.getAdapterPosition());
-                        notifyItemRemoved(holder.getAdapterPosition());
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(holder.term_name_view.getContext(), "Delete canceled", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                builder.show();
+                int current_position = holder.getAdapterPosition();
+                if(listener != null && current_position != RecyclerView.NO_POSITION){
+                    listener.onUpdateButtonClicked(termList.get(current_position));
+                }
             }
         });
     }
@@ -87,57 +47,44 @@ public class TermAdapter extends RecyclerView.Adapter<TermAdapter.ViewHolder> {
         return termList.size();
     }
 
-    /**
-     * The type View holder.
-     */
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        /**
-         * The Term name view.
-         */
-        TextView term_name_view, /**
-         * The Start date view.
-         */
-        start_date_view , /**
-         * The End date view.
-         */
-        end_date_view;
-        /**
-         * The On term listener.
-         */
-        OnTermListener onTermListener;
+    public void setTermList(List<TermModel> list){
+        this.termList = list;
+        notifyDataSetChanged();
+    }
 
-        /**
-         * Instantiates a new View holder.
-         *
-         * @param itemView       the item view
-         * @param onTermListener the on term listener
-         */
-        public ViewHolder(@NonNull View itemView, OnTermListener onTermListener) {
+    public TermModel getTermAt(int position){
+        return termList.get(position);
+    }
+    public class ViewHolder extends RecyclerView.ViewHolder{
+        TextView term_name_view,
+        start_date_view ,
+        end_date_view;
+        ImageButton update_btn;
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
             term_name_view = itemView.findViewById(R.id.termname);
             start_date_view = itemView.findViewById(R.id.startdate);
             end_date_view = itemView.findViewById(R.id.enddate);
+            update_btn = itemView.findViewById(R.id.updatebtn);
 
-            this.onTermListener = onTermListener;
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View view) {
-            onTermListener.onTermClicked(getAdapterPosition());
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int current_position = getAdapterPosition();
+                    if(listener != null && current_position != RecyclerView.NO_POSITION){
+                        listener.onTermClicked(termList.get(current_position));
+                    }
+                }
+            });
         }
     }
 
-    /**
-     * The interface On term listener.
-     */
     public interface OnTermListener{
-        /**
-         * On term clicked.
-         *
-         * @param position the position
-         */
-        void onTermClicked(int position);
+        void onTermClicked(TermModel term);
+        void onUpdateButtonClicked(TermModel term);
+    }
+    public void setListenerOnClick(OnTermListener listener){
+        this.listener = listener;
     }
 }
 

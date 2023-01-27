@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,27 +14,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * The type Assessment adapter.
- */
 public class AssessmentAdapter extends RecyclerView.Adapter<AssessmentAdapter.ViewHolder> {
 
     private static final String TAG = "AssessAdapter";
-    private Context context;
-    private List<AssessmentModel> assessmentModelList;
 
-    /**
-     * Instantiates a new Assessment adapter.
-     *
-     * @param context             the context
-     * @param assessmentModelList the assessment model list
-     */
-    public AssessmentAdapter(Context context, List<AssessmentModel> assessmentModelList){
-        this.context = context;
-        this.assessmentModelList = assessmentModelList;
-    }
+    private Context context;
+    private List<AssessmentModel> assessmentModelList = new ArrayList<>();
+    OnItemClicked listener;
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -46,38 +37,6 @@ public class AssessmentAdapter extends RecyclerView.Adapter<AssessmentAdapter.Vi
         AssessmentModel assessmentModel = assessmentModelList.get(position);
         holder.assessment_name.setText(assessmentModel.getName());
         holder.assessment_due_date.setText(assessmentModel.getDue_date());
-        Button done_btn = holder.itemView.findViewById(R.id.done_btn);
-        done_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(holder.assessment_name.getContext());
-                builder.setTitle("Are you sure?");
-                builder.setMessage("Operation cannot be undone.");
-                builder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        assessmentModelList.remove(holder.getAdapterPosition());
-                        notifyItemRemoved(holder.getAdapterPosition());
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(holder.assessment_name.getContext(), "Done canceled", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                builder.show();
-            }
-        });
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int position_ = holder.getAdapterPosition();
-                AssessmentModel model = assessmentModelList.get(position_);
-                AssessmentDialog.getInstance().buildDialog(context, AssessmentAdapter.this, model, position_).show();
-            }
-        });
     }
 
     @Override
@@ -85,27 +44,35 @@ public class AssessmentAdapter extends RecyclerView.Adapter<AssessmentAdapter.Vi
         return assessmentModelList.size();
     }
 
-    /**
-     * The type View holder.
-     */
+    public void setAssessmentModelList(List<AssessmentModel> assessmentModelList) {
+        this.assessmentModelList = assessmentModelList;
+        notifyDataSetChanged();
+    }
+    public AssessmentModel getModelAt(int position){
+        return assessmentModelList.get(position);
+    }
     public class ViewHolder extends RecyclerView.ViewHolder {
-        /**
-         * The Assessment name.
-         */
-        TextView assessment_name, /**
-         * The Assessment due date.
-         */
+        TextView assessment_name,
         assessment_due_date;
-
-        /**
-         * Instantiates a new View holder.
-         *
-         * @param itemView the item view
-         */
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             assessment_name = itemView.findViewById(R.id.assessment_title);
             assessment_due_date = itemView.findViewById(R.id.due_date);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int current_position = getAdapterPosition();
+                    if(listener != null && current_position != RecyclerView.NO_POSITION){
+                        listener.onItemClicked(assessmentModelList.get(current_position));
+                    }
+                }
+            });
         }
+    }
+    public interface OnItemClicked{
+        void onItemClicked(AssessmentModel assessmentModel);
+    }
+    public void setAssessmentListenerOnClick(OnItemClicked listener){
+        this.listener = listener;
     }
 }
