@@ -6,10 +6,8 @@
     android:layout_marginTop="10dp"
     android:layout_marginRight="10dp"
     android:layout_marginLeft="10dp"
-    app:cardCornerRadius="10dp"
-    android:background="@color/white"
     android:orientation="vertical"
-    android:backgroundTintMode="add"
+    android:background="@drawable/linear_round_corners"
     >
 
     <RelativeLayout
@@ -28,13 +26,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/assessment_title"
+            android:layout_toRightOf="@id/assessment_title"
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="20dp">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Due on "
-                android:layout_marginRight="10dp"/>
+                android:text="Due on " />
 
             <TextView
                 android:id="@+id/due_date"

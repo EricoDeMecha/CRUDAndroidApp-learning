@@ -7,7 +7,7 @@
         android:id="@+id/assessment_title_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Course"
+        android:hint="Assessment"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         />
@@ -15,7 +15,7 @@
         android:id="@+id/due_date_edit_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Start date"
+        android:hint="Due date"
         android:drawableRight="@android:drawable/ic_menu_my_calendar"
         android:clickable="false"
         android:cursorVisible="false"

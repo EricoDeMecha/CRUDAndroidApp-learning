@@ -89,12 +89,12 @@ public class CourseAssessmentsFragment extends Fragment {
             public void onItemClicked(AssessmentModel assessmentModel) {
                 // create a pop up for the purposes of editing
                 new AssessmentDialog(requireContext(), assessmentModelViewModel, assessmentModel, false).show();
-                if(ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.SET_ALARM) ==
+                /*if(ContextCompat.checkSelfPermission(requireActivity(), Manifest.permission.SET_ALARM) ==
                 PackageManager.PERMISSION_GRANTED){
                     scheduleNotification();
                 }else{
                     Toast.makeText(requireContext(),"Alarm persion denied", Toast.LENGTH_SHORT).show();
-                }
+                }*/
             }
         });
         return fragment_view;

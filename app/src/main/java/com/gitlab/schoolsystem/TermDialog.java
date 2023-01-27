@@ -49,7 +49,7 @@ public class TermDialog {
                             String start_date_ = term_start_date.getText().toString();
                             String end_date_ = term_end_date.getText().toString();
                             if(Utils.compareDates(start_date_, end_date_) < 0){
-                                if(!isInserting){
+                                if(isInserting){
                                     // insert
                                     TermModel this_model = new TermModel(term_name.getText().toString(), start_date_, end_date_);
                                     termModelViewModel.insert(new TermModel(term_name.getText().toString(), start_date_, end_date_));
