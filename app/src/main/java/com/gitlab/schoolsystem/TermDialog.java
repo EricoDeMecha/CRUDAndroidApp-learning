@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -45,19 +46,29 @@ public class TermDialog {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if(!Utils.isEmpty(term_name)&&!Utils.isEmpty(term_end_date) && !Utils.isEmpty(term_start_date)){
-                            if(!isInserting){
-                                // update
-                                termModelViewModel.update(new TermModel(term_name.getText().toString(), term_start_date.getText().toString(), term_end_date.getText().toString()));
-                            }else{
-                                // insert
-                                TermModel this_model = new TermModel(term_name.getText().toString(), term_start_date.getText().toString(), term_end_date.getText().toString());
-                                Log.d(TAG, "onClick: "+ this_model.toString());
-                                termModelViewModel.insert(new TermModel(term_name.getText().toString(), term_start_date.getText().toString(), term_end_date.getText().toString()));
+                            String start_date_ = term_start_date.getText().toString();
+                            String end_date_ = term_end_date.getText().toString();
+                            if(Utils.compareDates(start_date_, end_date_) < 0){
+                                if(!isInserting){
+                                    // insert
+                                    TermModel this_model = new TermModel(term_name.getText().toString(), start_date_, end_date_);
+                                    termModelViewModel.insert(new TermModel(term_name.getText().toString(), start_date_, end_date_));
+                                }else{
+                                    // update
+                                    termModelViewModel.update(new TermModel(term_name.getText().toString(), start_date_, end_date_));
+                                }
+                            }else {
+                                Toast.makeText(context, "Wrong dates order", Toast.LENGTH_LONG).show();
                             }
+
                         }
                     }
                 })
                 .setNegativeButton("Cancel", null);
-        builder.create().show();
+
+        AlertDialog dialog = builder.create();
+                dialog.getWindow().setBackgroundDrawableResource(R.drawable.rounded_corners_background);
+                dialog.show();
+//        builder.create().show();
     }
 }

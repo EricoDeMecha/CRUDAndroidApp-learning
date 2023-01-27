@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -41,6 +44,10 @@ public class MainActivity extends AppCompatActivity{
                 termAdapter.setTermList(termModels);
             }
         });
+
+        // toast information
+        Toast.makeText(this, "Swipe left/right to delete cards", Toast.LENGTH_LONG).show();
+
         FloatingActionButton add = findViewById(R.id.add);
 
         add.setOnClickListener(new View.OnClickListener() {

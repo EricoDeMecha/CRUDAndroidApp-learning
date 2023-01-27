@@ -58,6 +58,8 @@ public class InstructorDialog {
                         // do nothing
                     }
                 });
-     builder.create().show();
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.rounded_corners_background);
+        dialog.show();
     }
 }

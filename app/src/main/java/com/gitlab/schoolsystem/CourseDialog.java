@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -62,18 +63,26 @@ public class CourseDialog {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if(!Utils.isEmpty(course_title_view) && !Utils.isEmpty(course_start_date) && !Utils.isEmpty(course_start_date)){
-                            CourseModel  new_course_model = new CourseModel(
-                                    course_title_view.getText().toString(),
-                                    course_start_date.getText().toString(),
-                                    course_end_date.getText().toString(),
-                                    CourseStatus.valueOf(selected_status.toString()),
-                                    new InstructorModel(selected_instructor.toString()));
-                            courseModelViewModel.insert(new_course_model);
+                            String start_date_ = course_start_date.getText().toString();
+                            String end_date_ = course_end_date.getText().toString();
+                            if(Utils.compareDates(start_date_, end_date_) < 0){
+                                CourseModel  new_course_model = new CourseModel(
+                                        course_title_view.getText().toString(),
+                                        start_date_,
+                                        end_date_,
+                                        CourseStatus.valueOf(selected_status.toString()),
+                                        new InstructorModel(selected_instructor.toString()));
+                                courseModelViewModel.insert(new_course_model);
+                            }else {
+                                Toast.makeText(context, "Wrong dates order", Toast.LENGTH_LONG).show();
+                            }
                         }
                     }
                 })
                 .setNegativeButton("Cancel", null);
-        builder.create().show();
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.rounded_corners_background);
+        dialog.show();
     }
 
     private String[] getInstructorNames() {
