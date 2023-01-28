@@ -20,7 +20,6 @@ public class CourseChildrenActivity extends AppCompatActivity {
     public static final String TITLE2 =
             "com.gitlab.schoolsystem.CourseModel";
     private static String term_name;
-
     @Override
     public boolean onSupportNavigateUp() {
         Intent intent = NavUtils.getParentActivityIntent(this);

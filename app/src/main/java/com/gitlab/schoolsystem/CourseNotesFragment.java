@@ -27,6 +27,7 @@ import java.util.List;
 public class CourseNotesFragment extends Fragment {
     private NoteModelViewModel noteModelViewModel;
     private NoteAdapter noteAdapter;
+    private CourseModel courseModel;
 
     @Nullable
     @Override
@@ -37,14 +38,25 @@ public class CourseNotesFragment extends Fragment {
         int NUM_COLS = 3;
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(NUM_COLS, LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(noteAdapter);
+        // retrieve course model
+        courseModel = ((CourseChildrenActivity) requireActivity()).getCourseModel();
 
         noteModelViewModel = ViewModelProviders.of(requireActivity()).get(NoteModelViewModel.class);
-        noteModelViewModel.getAllNotes().observe(requireActivity(), new Observer<List<NoteModel>>() {
-            @Override
-            public void onChanged(List<NoteModel> noteModelList) {
-                noteAdapter.setNoteModelList(noteModelList);
-            }
-        });
+        if(courseModel != null){
+            noteModelViewModel.getNotesByCourseName(courseModel.getTerm_name()).observe(requireActivity(), new Observer<List<NoteModel>>() {
+                @Override
+                public void onChanged(List<NoteModel> noteModelList) {
+                    noteAdapter.setNoteModelList(noteModelList);
+                }
+            });
+        }else{
+            noteModelViewModel.getAllNotes().observe(requireActivity(), new Observer<List<NoteModel>>() {
+                @Override
+                public void onChanged(List<NoteModel> noteModelList) {
+                    noteAdapter.setNoteModelList(noteModelList);
+                }
+            });
+        }
 
 
         FloatingActionButton note_add_button = fragment_view.findViewById(R.id.add_note_button);

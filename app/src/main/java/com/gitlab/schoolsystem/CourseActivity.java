@@ -69,12 +69,21 @@ public class CourseActivity extends AppCompatActivity{
 
 
         courseModelViewModel = ViewModelProviders.of(this).get(CourseModelViewModel.class);
-        courseModelViewModel.getAllCourses().observe(this, new Observer<List<CourseModel>>() {
-            @Override
-            public void onChanged(List<CourseModel> courseModels) {
-                courseAdapter.setCourseModelList(courseModels);
-            }
-        });
+        if(termModel != null){
+            courseModelViewModel.getCoursesByTermName(termModel.getTerm_name()).observe(this, new Observer<List<CourseModel>>() {
+                @Override
+                public void onChanged(List<CourseModel> courseModels) {
+                    courseAdapter.setCourseModelList(courseModels);
+                }
+            });
+        }else{
+            courseModelViewModel.getAllCourses().observe(this, new Observer<List<CourseModel>>() {
+                @Override
+                public void onChanged(List<CourseModel> courseModels) {
+                    courseAdapter.setCourseModelList(courseModels);
+                }
+            });
+        }
         // add dialog
         FloatingActionButton add_course_btn = findViewById(R.id.add_course);
         add_course_btn.setOnClickListener(new View.OnClickListener() {

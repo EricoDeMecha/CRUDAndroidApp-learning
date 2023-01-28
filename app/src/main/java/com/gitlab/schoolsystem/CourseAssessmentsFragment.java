@@ -39,6 +39,7 @@ public class CourseAssessmentsFragment extends Fragment {
 
     private AssessmentAdapter assessmentAdapter;
     private AssessmentModelViewModel assessmentModelViewModel;
+    private CourseModel courseModel;
 
     @Nullable
     @Override
@@ -49,13 +50,25 @@ public class CourseAssessmentsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(assessmentAdapter);
 
+        courseModel = ((CourseChildrenActivity) requireActivity()).getCourseModel();
+
+
         assessmentModelViewModel = ViewModelProviders.of(requireActivity()).get(AssessmentModelViewModel.class);
-        assessmentModelViewModel.getAllAssessments().observe(requireActivity(), new Observer<List<AssessmentModel>>() {
-            @Override
-            public void onChanged(List<AssessmentModel> assessmentModels) {
-                assessmentAdapter.setAssessmentModelList(assessmentModels);
-            }
-        });
+        if(courseModel != null){
+            assessmentModelViewModel.getAssessmentsByCourseName(courseModel.getTerm_name()).observe(requireActivity(), new Observer<List<AssessmentModel>>() {
+                @Override
+                public void onChanged(List<AssessmentModel> assessmentModels) {
+                    assessmentAdapter.setAssessmentModelList(assessmentModels);
+                }
+            });
+        }else{
+            assessmentModelViewModel.getAllAssessments().observe(requireActivity(), new Observer<List<AssessmentModel>>() {
+                @Override
+                public void onChanged(List<AssessmentModel> assessmentModels) {
+                    assessmentAdapter.setAssessmentModelList(assessmentModels);
+                }
+            });
+        }
         // delete assessment on swipe
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT ) {
