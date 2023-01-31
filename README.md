@@ -1,6 +1,6 @@
 # CRUD Android School App.
 
-A CRUD android developed while learning android fully.
+A CRUD android developed while learning android.
 
 ## Structure
 ```

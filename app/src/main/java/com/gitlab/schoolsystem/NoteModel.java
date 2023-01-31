@@ -52,4 +52,14 @@ public class NoteModel {
     public void setCourse_title(String course_title) {
         this.course_title = course_title;
     }
+
+    @Override
+    public String toString() {
+        return "NoteModel{" +
+                "id=" + id +
+                ", course_title='" + course_title + '\'' +
+                ", note_title='" + note_title + '\'' +
+                ", node_body='" + node_body + '\'' +
+                '}';
+    }
 }

@@ -4,14 +4,16 @@ import android.app.Application;
 import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
+import androidx.room.Room;
 
 import java.util.List;
 
 public class AssessmentModelRepository {
+    private static final String DATABASE = "ss_database";
     private AssessmentModelDao assessmentModelDao;
     private LiveData<List<AssessmentModel>> assessments;
     public AssessmentModelRepository(Application application){
-        AssessmentModelDatabase database = AssessmentModelDatabase.getInstance(application);
+        AppDatabase database = Room.databaseBuilder(application, AppDatabase.class, DATABASE).build();
         assessmentModelDao = database.assessmentModelDao();
         assessments = assessmentModelDao.getAllAssessments();
     }

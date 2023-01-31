@@ -9,6 +9,8 @@ import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
+import androidx.room.TypeConverter;
+import androidx.room.TypeConverters;
 
 @Entity(tableName = "course_table")
 public class CourseModel implements Parcelable {
@@ -19,6 +21,7 @@ public class CourseModel implements Parcelable {
     private String term_name;
 
     private String course_title, course_start_date, course_end_date;
+    @TypeConverters(CourseStatusConverter.class)
     private CourseStatus course_status;
     @Embedded
     private InstructorModel course_instructor;

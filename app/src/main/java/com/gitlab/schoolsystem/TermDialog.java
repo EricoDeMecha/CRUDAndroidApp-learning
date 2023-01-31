@@ -51,11 +51,14 @@ public class TermDialog {
                             if(Utils.compareDates(start_date_, end_date_) < 0){
                                 if(isInserting){
                                     // insert
-                                    TermModel this_model = new TermModel(term_name.getText().toString(), start_date_, end_date_);
-                                    termModelViewModel.insert(new TermModel(term_name.getText().toString(), start_date_, end_date_));
+                                    TermModel new_model = new TermModel(term_name.getText().toString(), start_date_, end_date_);
+                                    termModelViewModel.insert(new_model);
                                 }else{
                                     // update
-                                    termModelViewModel.update(new TermModel(term_name.getText().toString(), start_date_, end_date_));
+                                    current_term.setTerm_name(term_name.getText().toString());
+                                    current_term.setStart_date(start_date_);
+                                    current_term.setEnd_date(end_date_);
+                                    termModelViewModel.update(current_term);
                                 }
                             }else {
                                 Toast.makeText(context, "Wrong dates order", Toast.LENGTH_LONG).show();

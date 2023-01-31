@@ -1,6 +1,9 @@
 package com.gitlab.schoolsystem;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -17,6 +20,7 @@ public class AssessmentModelViewModel extends AndroidViewModel {
         allAssessments = assessmentModelRepository.getAllAssessments();
     }
     public void insert(AssessmentModel assessment){
+        Log.d(TAG, "insert: " + assessment.toString());
         assessmentModelRepository.insert(assessment);
     }
     public void update(AssessmentModel assessment){

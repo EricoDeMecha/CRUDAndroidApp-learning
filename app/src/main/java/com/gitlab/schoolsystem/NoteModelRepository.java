@@ -4,14 +4,16 @@ import android.app.Application;
 import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
+import androidx.room.Room;
 
 import java.util.List;
 
 public class NoteModelRepository {
+    private static final String DATABASE = "ss_database";
     private NoteModelDao noteModelDao;
     private LiveData<List<NoteModel>> notes;
     public NoteModelRepository(Application application){
-        NoteModelDatabase database = NoteModelDatabase.getInstance(application);
+        AppDatabase database = Room.databaseBuilder(application, AppDatabase.class, DATABASE).build();
         noteModelDao = database.noteModelDao();
         notes = noteModelDao.getAllNotes();
     }

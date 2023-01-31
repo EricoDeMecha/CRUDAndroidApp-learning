@@ -15,11 +15,21 @@ public class InstructorModel implements Parcelable {
     private String  name, phone, email_address;
 
     @Ignore
-    public InstructorModel(String name){
-        this.name = name;
-        this.phone = "123456789";
-        this.email_address = "generic@gmail.com";
+    public InstructorModel(String str) {
+        str = str.substring(str.indexOf("{") + 1, str.lastIndexOf("}")).trim();
+        String[] fields = str.split(",");
+        for (String field : fields) {
+            field = field.trim();
+            if (field.startsWith("name='")) {
+                this.name = field.substring(field.indexOf("'") + 1, field.lastIndexOf("'"));
+            } else if (field.startsWith("phone='")) {
+                this.phone = field.substring(field.indexOf("'") + 1, field.lastIndexOf("'"));
+            } else if (field.startsWith("email_address='")) {
+                this.email_address = field.substring(field.indexOf("'") + 1, field.lastIndexOf("'"));
+            }
+        }
     }
+
 
     public InstructorModel(String name, String phone, String email_address) {
         this.name = name;

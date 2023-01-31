@@ -38,7 +38,7 @@ public class DatePicker {
 
     private String updateDate() {
         String m_format = "yyyy-MM-dd";
-        SimpleDateFormat date_format = new SimpleDateFormat(m_format, Locale.US);
+        SimpleDateFormat date_format = new SimpleDateFormat(m_format, Locale.getDefault());
         return date_format.format(calendar.getTime());
     }
 }

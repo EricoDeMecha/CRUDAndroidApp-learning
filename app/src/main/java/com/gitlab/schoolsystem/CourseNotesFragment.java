@@ -28,7 +28,7 @@ public class CourseNotesFragment extends Fragment {
     private NoteModelViewModel noteModelViewModel;
     private NoteAdapter noteAdapter;
     private CourseModel courseModel;
-
+    private static String course_title;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -41,35 +41,27 @@ public class CourseNotesFragment extends Fragment {
         // retrieve course model
         courseModel = ((CourseChildrenActivity) requireActivity()).getCourseModel();
 
-        noteModelViewModel = ViewModelProviders.of(requireActivity()).get(NoteModelViewModel.class);
-        if(courseModel != null){
-            noteModelViewModel.getNotesByCourseName(courseModel.getTerm_name()).observe(requireActivity(), new Observer<List<NoteModel>>() {
-                @Override
-                public void onChanged(List<NoteModel> noteModelList) {
-                    noteAdapter.setNoteModelList(noteModelList);
-                }
-            });
-        }else{
-            noteModelViewModel.getAllNotes().observe(requireActivity(), new Observer<List<NoteModel>>() {
-                @Override
-                public void onChanged(List<NoteModel> noteModelList) {
-                    noteAdapter.setNoteModelList(noteModelList);
-                }
-            });
-        }
+        course_title = courseModel.getCourse_title();
 
+        noteModelViewModel = ViewModelProviders.of(requireActivity()).get(NoteModelViewModel.class);
+        noteModelViewModel.getNotesByCourseName(course_title).observe(requireActivity(), new Observer<List<NoteModel>>() {
+            @Override
+            public void onChanged(List<NoteModel> noteModelList) {
+                noteAdapter.setNoteModelList(noteModelList);
+            }
+        });
 
         FloatingActionButton note_add_button = fragment_view.findViewById(R.id.add_note_button);
         note_add_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new NoteDialog(requireContext(), noteModelViewModel, null, true).show();
+                new NoteDialog(requireContext(), noteModelViewModel, null, course_title,true).show();
             }
         });
         noteAdapter.setNoteListener(new NoteAdapter.OnItemListener() {
             @Override
             public void onItemClicked(NoteModel note) {
-                new NoteDialog(requireContext(), noteModelViewModel,  note, false).show();
+                new NoteDialog(requireContext(), noteModelViewModel,  note, course_title,false).show();
             }
 
             @Override

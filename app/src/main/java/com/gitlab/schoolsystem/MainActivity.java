@@ -2,16 +2,20 @@ package com.gitlab.schoolsystem;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -48,6 +52,10 @@ public class MainActivity extends AppCompatActivity{
         // toast information
         Toast.makeText(this, "Swipe left/right to delete cards", Toast.LENGTH_LONG).show();
 
+        // request permission to use the  ALARM
+        if(checkSelfPermission(Manifest.permission.WAKE_LOCK) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WAKE_LOCK}, 0);
+        }
         FloatingActionButton add = findViewById(R.id.add);
 
         add.setOnClickListener(new View.OnClickListener() {

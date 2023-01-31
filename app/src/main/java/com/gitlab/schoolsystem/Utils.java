@@ -7,7 +7,9 @@ import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class Utils {
     public static boolean isEmpty(EditText field){
@@ -30,5 +32,16 @@ public class Utils {
             e.printStackTrace();
             return 0;
         }
+    }
+    public static Calendar getCalendarInstance(String date_string){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        try {
+            Date date = simpleDateFormat.parse(date_string);
+            calendar.setTime(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return calendar;
     }
 }

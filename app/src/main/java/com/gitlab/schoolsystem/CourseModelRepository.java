@@ -4,14 +4,16 @@ import android.app.Application;
 import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
+import androidx.room.Room;
 
 import java.util.List;
 
 public class CourseModelRepository {
+    private static final String DATABASE = "ss_database";
     private CourseModelDao courseModelDao;
     private LiveData<List<CourseModel>> courseModelList;
     public CourseModelRepository(Application application){
-        CourseModelDatabase database = CourseModelDatabase.getInstance(application);
+        AppDatabase database = Room.databaseBuilder(application, AppDatabase.class, DATABASE).build();
         courseModelDao = database.courseModelDao();
         courseModelList = courseModelDao.getAllCourses();
     }

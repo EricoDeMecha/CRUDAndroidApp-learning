@@ -1,7 +1,10 @@
 package com.gitlab.schoolsystem;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -13,12 +16,13 @@ public class NoteDialog {
     private NoteModelViewModel noteModelViewModel;
     private NoteModel noteModel;
     private boolean isInserting;
-
-    public NoteDialog(Context context, NoteModelViewModel noteModelViewModel, NoteModel noteModel, boolean isInserting){
+    private String course_title;
+    public NoteDialog(Context context, NoteModelViewModel noteModelViewModel, NoteModel noteModel, String course_title, boolean isInserting){
         this.context = context;
         this.noteModelViewModel = noteModelViewModel;
         this.isInserting = isInserting;
         this.noteModel = noteModel;
+        this.course_title  = course_title;
     }
 
     public void show(){
@@ -41,9 +45,14 @@ public class NoteDialog {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if(!Utils.isEmpty(note_title) && !Utils.isEmpty(note_body)){
                             if(isInserting){
-                                noteModelViewModel.insert(new NoteModel(note_title.getText().toString(), note_body.getText().toString()));
+                                NoteModel new_note = new NoteModel(note_title.getText().toString(), note_body.getText().toString());
+                                new_note.setCourse_title(course_title);
+//                                Log.d(TAG, "onClick: "+ new_note.toString());
+                                noteModelViewModel.insert(new_note);
                             }else {
-                                noteModelViewModel.update(new NoteModel(note_title.getText().toString(), note_body.getText().toString()));
+                                noteModel.setNote_title(note_title.getText().toString());
+                                noteModel.setNode_body(note_body.getText().toString());
+                                noteModelViewModel.update(noteModel);
                             }
                         }
                     }

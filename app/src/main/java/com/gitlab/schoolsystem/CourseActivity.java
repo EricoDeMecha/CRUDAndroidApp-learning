@@ -27,6 +27,7 @@ public class CourseActivity extends AppCompatActivity{
             "com.gitlab.schoolsystem.CourseModel";
     private static final String TAG = "CourseActivity";
     private static final int NUM_COLS  = 2;
+    private static String term_name;
 
     private TermModel termModel;
 
@@ -54,7 +55,8 @@ public class CourseActivity extends AppCompatActivity{
                 actionBar.setTitle(data.getStringExtra(CourseActivity.TITLE2));
             }
             if(termModel != null){
-                actionBar.setTitle(termModel.getTerm_name());
+                term_name = termModel.getTerm_name();
+                actionBar.setTitle(term_name);
             }
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
@@ -69,29 +71,19 @@ public class CourseActivity extends AppCompatActivity{
 
 
         courseModelViewModel = ViewModelProviders.of(this).get(CourseModelViewModel.class);
-        if(termModel != null){
-            courseModelViewModel.getCoursesByTermName(termModel.getTerm_name()).observe(this, new Observer<List<CourseModel>>() {
-                @Override
-                public void onChanged(List<CourseModel> courseModels) {
-                    courseAdapter.setCourseModelList(courseModels);
-                }
-            });
-        }else{
-            courseModelViewModel.getAllCourses().observe(this, new Observer<List<CourseModel>>() {
-                @Override
-                public void onChanged(List<CourseModel> courseModels) {
-                    courseAdapter.setCourseModelList(courseModels);
-                }
-            });
-        }
+        courseModelViewModel.getCoursesByTermName(term_name).observe(this, new Observer<List<CourseModel>>() {
+            @Override
+            public void onChanged(List<CourseModel> courseModels) {
+                courseAdapter.setCourseModelList(courseModels);
+            }
+        });
         // add dialog
         FloatingActionButton add_course_btn = findViewById(R.id.add_course);
         add_course_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                public CourseDialog(Context context, CourseModelViewModel courseModelViewModel, CourseModel courseModel, boolean isInserting){
                 List<CourseModel> temp_courses =  courseModelViewModel.getAllCourses().getValue();
-                new CourseDialog(CourseActivity.this, courseModelViewModel, temp_courses).show();
+                new CourseDialog(CourseActivity.this, courseModelViewModel, temp_courses, term_name).show();
             }
         });
         // delete dialog

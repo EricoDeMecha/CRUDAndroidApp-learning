@@ -17,16 +17,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Arrays;
 
-/**
- * The type Course details fragment.
- */
 public class CourseDetailsFragment extends Fragment {
-    private CourseModel courseModel;
     private View view;
     private FloatingActionButton save_button;
     private EditText course_title, start_date, end_date;
     private Spinner status_spinner, instructor_spinner;
     private static final String TAG = "CourseDetailsFragment";
+
+    private CourseModel courseModel;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

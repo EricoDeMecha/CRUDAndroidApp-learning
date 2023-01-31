@@ -1,5 +1,7 @@
 package com.gitlab.schoolsystem;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
@@ -23,11 +25,13 @@ public class CourseDialog {
     private Context context;
     private CourseModelViewModel courseModelViewModel;
     private List<CourseModel> courseModels;
+    private String term_name;
 
-    public CourseDialog(Context context, CourseModelViewModel courseModelViewModel, List<CourseModel> courseModels){
+    public CourseDialog(Context context, CourseModelViewModel courseModelViewModel, List<CourseModel> courseModels, String term_name){
         this.context = context;
         this.courseModelViewModel = courseModelViewModel;
         this.courseModels = courseModels;
+        this.term_name = term_name;
     }
     public void show() {
         View course_dialog_view = LayoutInflater.from(context).inflate(R.layout.course_dialog, null);
@@ -72,6 +76,7 @@ public class CourseDialog {
                                         end_date_,
                                         CourseStatus.valueOf(selected_status.toString()),
                                         new InstructorModel(selected_instructor.toString()));
+                                new_course_model.setTerm_name(term_name);// set the term name for this model
                                 courseModelViewModel.insert(new_course_model);
                             }else {
                                 Toast.makeText(context, "Wrong dates order", Toast.LENGTH_LONG).show();
@@ -87,6 +92,11 @@ public class CourseDialog {
 
     private String[] getInstructorNames() {
         List<String> instructors = new ArrayList<>();
+        if(courseModels == null ){
+            // return an empty instructor
+            instructors.add(new InstructorModel("temp", "temp@gmail.com", "1234567890").toString());
+            return instructors.toArray(new String[0]);
+        }
         for(CourseModel courseModel: courseModels){
             instructors.add(courseModel.getCourse_instructor().toString());
         }

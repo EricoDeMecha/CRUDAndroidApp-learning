@@ -4,14 +4,17 @@ import android.app.Application;
 import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
 
 import java.util.List;
 
 public class TermModelRepository {
+    private static final String DATABASE = "ss_database";
     private TermModelDao termModelDao;
     private LiveData<List<TermModel>> termModelList;
     public TermModelRepository(Application application){
-        TermModelDatabase database = TermModelDatabase.getInstance(application);
+        AppDatabase database = Room.databaseBuilder(application, AppDatabase.class, DATABASE).build();
         termModelDao = database.termModelDao();
         termModelList = termModelDao.getALLNotes();
     }

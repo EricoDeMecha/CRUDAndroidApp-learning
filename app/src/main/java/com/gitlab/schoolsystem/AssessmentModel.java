@@ -51,4 +51,14 @@ public class AssessmentModel {
     public void setCourse_title(String course_title) {
         this.course_title = course_title;
     }
+
+    @Override
+    public String toString() {
+        return "AssessmentModel{" +
+                "id=" + id +
+                ", course_title='" + course_title + '\'' +
+                ", name='" + name + '\'' +
+                ", due_date='" + due_date + '\'' +
+                '}';
+    }
 }
